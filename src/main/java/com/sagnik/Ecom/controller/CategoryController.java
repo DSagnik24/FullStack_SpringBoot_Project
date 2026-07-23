@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class CategoryController {
+public class  CategoryController {
     @Autowired
     private CategoryService categoryService;
 
