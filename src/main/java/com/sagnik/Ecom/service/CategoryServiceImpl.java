@@ -1,5 +1,7 @@
 package com.sagnik.Ecom.service;
 
+import com.sagnik.Ecom.Exceptions.APIException;
+import com.sagnik.Ecom.Exceptions.ResourceNotFoundException;
 import com.sagnik.Ecom.model.Category;
 import com.sagnik.Ecom.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,22 @@ public class CategoryServiceImpl implements CategoryService{
     @Autowired
     private CategoryRepository categoryRepository;
 
+
     @Override
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        if(categories.isEmpty()){
+            throw new APIException("No Category created");
+        }
+        return categories;
     }
 
     @Override
     public void createCategory(Category category) {
+        Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
+        if(savedCategory != null){
+            throw new APIException("Category with the name "+category.getCategoryName()+" already exists");
+        }
         categoryRepository.save(category);
     }
 
@@ -31,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService{
     public String deleteCategory(Long categoryId) {
 
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Resource not found"));
+                .orElseThrow(()-> new ResourceNotFoundException(categoryId,"Category","categoryId"));
 
         categoryRepository.delete(category);
         return "The category of id: "+categoryId+" is deleted";
@@ -41,7 +52,7 @@ public class CategoryServiceImpl implements CategoryService{
     public Category updateCategory(Category category, Long categoryId){
 
         Category savedCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Resource not found"));
+                .orElseThrow(()-> new ResourceNotFoundException(categoryId,"Category","categoryId"));
 
         category.setCategoryId(categoryId);
         savedCategory = categoryRepository.save(category);
