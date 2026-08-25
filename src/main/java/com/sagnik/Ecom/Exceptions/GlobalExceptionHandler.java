@@ -1,5 +1,6 @@
 package com.sagnik.Ecom.Exceptions;
 
+import com.sagnik.Ecom.payload.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,6 +15,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    /** Converts validation errors into a field-to-message response. */
     public ResponseEntity<Map<String,String>> myMethodArgumentNotValidException(MethodArgumentNotValidException e){
         Map<String, String> response = new HashMap<>();
         e.getBindingResult().getAllErrors().forEach(err->{
@@ -25,16 +27,20 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> ResourceNotFoundException(ResourceNotFoundException e){
+    /** Converts missing-resource exceptions into a 404 API response. */
+    public ResponseEntity<APIResponse> ResourceNotFoundException(ResourceNotFoundException e){
         String message = e.getMessage();
-        return new ResponseEntity<>(message,HttpStatus.NOT_FOUND);
+        APIResponse apiResponse = new APIResponse(message,false);
+        return new ResponseEntity<>(apiResponse,HttpStatus.NOT_FOUND);
 
     }
 
     @ExceptionHandler(APIException.class)
-    public ResponseEntity<String> APIException(APIException e){
+    /** Converts application API exceptions into a 400 API response. */
+    public ResponseEntity<APIResponse> APIException(APIException e){
         String message = e.getMessage();
-        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+        APIResponse apiResponse = new APIResponse(message,false);
+        return new ResponseEntity<>(apiResponse,HttpStatus.BAD_REQUEST);
 
     }
 }

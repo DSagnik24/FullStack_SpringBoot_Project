@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryRepository extends JpaRepository<Category,Long> {
 
+    /** Finds a category by its unique name. */
     Category findByCategoryName(@NotBlank String categoryName);
 
 }
