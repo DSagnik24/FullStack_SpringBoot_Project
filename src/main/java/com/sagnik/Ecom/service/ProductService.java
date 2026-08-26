@@ -1,6 +1,5 @@
 package com.sagnik.Ecom.service;
 
-import com.sagnik.Ecom.model.Product;
 import com.sagnik.Ecom.payload.ProductDTO;
 import com.sagnik.Ecom.payload.ProductResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,14 +10,11 @@ public interface ProductService {
     /** Adds a product to an existing category. */
     ProductDTO addProduct(Long categoryId, ProductDTO productDTO);
 
-    /** Retrieves all products as DTOs. */
-    ProductResponse getAllProducts();
-
     /** Retrieves products for a category. */
-    ProductResponse searchByCategory(Long categoryId);
+    ProductResponse searchByCategory(Long categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 
     /** Searches for products by name without case sensitivity. */
-    ProductResponse searchProductByKeyword(String keyword);
+    ProductResponse searchProductByKeyword(String keyword, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 
     /** Updates an existing product and returns the saved DTO. */
     ProductDTO updateProduct(Long productId, ProductDTO productDTO);
@@ -26,4 +22,6 @@ public interface ProductService {
     ProductDTO deleteProduct(Long productId);
 
     ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException;
+
+    ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 }
